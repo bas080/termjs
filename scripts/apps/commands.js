@@ -106,7 +106,7 @@ term.commands.register ( 'youtube', function( ){ //TODO
 
 term.commands.register ( 'history', function( ){
   this.on_command = function( p, input ){
-    return term.helpers.column( term.output.get( ) );
+    return term.helpers.column( term.history.list( ) );
   };
 } );
 

@@ -20,15 +20,24 @@ term.keyboard.shortcut( 'Backspace', function( event ){
 } );
 
 term.keyboard.shortcut( 'Enter', function( ){
+  term.history.reset();
   term.commands.execute( term.input.value( ) );
 } );
 
 term.keyboard.shortcut( 'Up', function( ){
-  return term.history.get( -1 );
+  return term.history.get( 1 );
 } );
 
 term.keyboard.shortcut( 'Down', function( ){
-  return term.history.get( 1 );
+  return term.history.get( -1 );
+} );
+
+term.keyboard.shortcut( 'Left', function( ){
+  term.input.move_cursor( -1 ); //negative is left
+} );
+
+term.keyboard.shortcut( 'Right', function( ){
+  term.input.move_cursor( 1 ); //negative is left
 } );
 
 term.keyboard.shortcut( 'Tab', function( ){

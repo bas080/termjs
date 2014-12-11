@@ -83,10 +83,31 @@ term.input = new ( function Input( ){
     if ( word == true ){
       var text  = before.innerHTML.trim( );
       var words = text.split( ' ' );
-      before.innerHTML = words.slice( 0, words.length-1 );
+      before.innerHTML = words.slice( 0, words.length-1 ).toString().replace(/,/g, ' ');
     }else{
       before.innerHTML = before.innerHTML.slice( 0, before.innerHTML.length-1 );
     }
+  };
+  this.move_cursor = function( offset ){
+    if (offset < 0){ //left
+      if ( before.innerHTML.length > 0) {
+        after.innerHTML = cursor.innerHTML + after.innerHTML;
+        cursor.innerHTML = before.innerHTML[before.innerHTML.length-1];
+        before.innerHTML = before.innerHTML.slice(0, before.innerHTML.length-1);
+      }
+    }else{ //right
+      if ( after.innerHTML.length > 0) {
+        before.innerHTML = before.innerHTML + cursor.innerHTML;
+        cursor.innerHTML = after.innerHTML[0];
+        after.innerHTML = after.innerHTML.slice(1, after.innerHTML.length);
+      }
+    }
+    return
+    var length = before.innerHTML.length;
+    cursor.innerHTML = before.innerHTML.slice(
+      Math.min(length, length+offset),
+      Math.max(length, length+offset)
+    );
   };
   this.add_character = function( character ){
     before.innerHTML += character;
@@ -128,18 +149,28 @@ term.output = new ( function Output( ){
 
 term.history = new ( function History( input ){
   var list = [ ];
-  var index = 0;
+  var index = -1;
   this.add = function( string ) {
-    list.push( string );
+    list.unshift( string );
+  };
+  this.reset = function(){
+    index = -1;
+  };
+  this.list = function(){
+    return list;
   };
   this.get = function( increment ){
-    if ( index+increment == 0 )
-    input.reset( );
-    var item = list[ list.length+index+increment ];
+    if ( index + increment == -1 ){
+      input.reset();
+      index = -1;
+    }
+    var item = list[ index+increment ];
     if ( item ){
       index += increment;
       input.value( item );
     }
+    console.log(index);
+    console.log(list);
   };
 } )( term.input );
 
@@ -231,7 +262,7 @@ term.commands = new ( function Commands( autocompleter, history, output, input )
   this.execute = function( string ){
     if ( string.trim( ) == '' )
     return;
-    history.add( string );
+    history.add( string.trim() );
     output.add( string );
     input.reset( );
     var pipes = string.split( '|' );
