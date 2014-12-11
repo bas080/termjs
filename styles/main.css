@@ -29,16 +29,49 @@ body {
 
 #terminal {
   text-shadow: 64px 32px 4px black, 2px 1px 2px black;
+  z-index: 0;
 }
 
 #input_cursor {
   transition: all 3s ease;
   background-color: #ddd;
-  color:black;
+  color: black;
   opacity: 0.4;
   box-shadow: 64px 32px 4px #000;
   border: 1px solid white;
   margin: -1px;
+}
+
+#player {
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  margin: 32px;
+  transition: all 0.5s ease;
+  z-index: -1;
+  opacity: 0;
+  width: 0px;
+  height: 0px;
+}
+
+#player.normal {
+  width: 640px;
+  height: 390px;
+  opacity: 1;
+}
+
+#player.fullscreen {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  opacity: 1;
+}
+
+#player.mini {
+  width: 20%;
+  height: 20%;
+  margin: 64px;
+  opacity: 1;
 }
 
 #input_cursor.blink {

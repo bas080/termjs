@@ -15,17 +15,15 @@ term = {
 };
 
 term.helpers = new ( function Helpers( ){
-  this.pretty = function( string ){
-    var line_length = 64;
-    var new_string = '';
-    for ( var i = 0, l = string.length; i < l; i += line_length ) {
-      var v = string[ i ];
-      new_string += string.slice( i, i+line_length )+'<br>';
-    }
-    return new_string;
+  this.table = function( array ){
+    //TODO works only for arrays within arrays example is
+    //[
+      //[ head1, head2, head 3 ], >>   a    b    c
+      //[ entry1, entry2, entry3 ]    >>   19   28   32
+    // ]
   };
   this.string = function( array ){
-    return array.slice( 0, array.length ).toString( ).replace( /, /g, ' ' );
+    return array.slice( 0, array.length ).toString( ).replace( /,/g, ' ' );
   };
   this.list = function( array ){
     var output = '';
@@ -83,31 +81,31 @@ term.input = new ( function Input( ){
     if ( word == true ){
       var text  = before.innerHTML.trim( );
       var words = text.split( ' ' );
-      before.innerHTML = words.slice( 0, words.length-1 ).toString().replace(/,/g, ' ');
+      before.innerHTML = words.slice( 0, words.length-1 ).toString( ).replace( /,/g, ' ' );
     }else{
       before.innerHTML = before.innerHTML.slice( 0, before.innerHTML.length-1 );
     }
   };
   this.move_cursor = function( offset ){
-    if (offset < 0){ //left
-      if ( before.innerHTML.length > 0) {
+    if ( offset < 0 ){ //left
+      if ( before.innerHTML.length > 0 ) {
         after.innerHTML = cursor.innerHTML + after.innerHTML;
-        cursor.innerHTML = before.innerHTML[before.innerHTML.length-1];
-        before.innerHTML = before.innerHTML.slice(0, before.innerHTML.length-1);
+        cursor.innerHTML = before.innerHTML[ before.innerHTML.length-1 ];
+        before.innerHTML = before.innerHTML.slice( 0, before.innerHTML.length-1 );
       }
     }else{ //right
-      if ( after.innerHTML.length > 0) {
+      if ( after.innerHTML.length > 0 ) {
         before.innerHTML = before.innerHTML + cursor.innerHTML;
-        cursor.innerHTML = after.innerHTML[0];
-        after.innerHTML = after.innerHTML.slice(1, after.innerHTML.length);
+        cursor.innerHTML = after.innerHTML[ 0 ];
+        after.innerHTML = after.innerHTML.slice( 1, after.innerHTML.length );
       }
     }
     return
     var length = before.innerHTML.length;
     cursor.innerHTML = before.innerHTML.slice(
-      Math.min(length, length+offset),
-      Math.max(length, length+offset)
-    );
+      Math.min( length, length+offset ),
+      Math.max( length, length+offset )
+ );
   };
   this.add_character = function( character ){
     before.innerHTML += character;
@@ -153,15 +151,15 @@ term.history = new ( function History( input ){
   this.add = function( string ) {
     list.unshift( string );
   };
-  this.reset = function(){
+  this.reset = function( ){
     index = -1;
   };
-  this.list = function(){
+  this.list = function( ){
     return list;
   };
   this.get = function( increment ){
     if ( index + increment == -1 ){
-      input.reset();
+      input.reset( );
       index = -1;
     }
     var item = list[ index+increment ];
@@ -169,8 +167,8 @@ term.history = new ( function History( input ){
       index += increment;
       input.value( item );
     }
-    console.log(index);
-    console.log(list);
+    console.log( index );
+    console.log( list );
   };
 } )( term.input );
 
@@ -206,7 +204,7 @@ term.keyboard = new ( function Keyboard( input ){
       'Ctrl 0',
       'Ctrl =',
       'Ctrl -'
-    ];
+ ];
     var key = event.key;
     return shortcuts.indexOf( key );
   };
@@ -248,8 +246,8 @@ term.autocompleter = new ( function Autocomplete( input ){
 
 term.commands = new ( function Commands( autocompleter, history, output, input ){
   var commands = {};
-  this.register = function( name, constructor ){
-    commands[ name ] = new constructor;
+  this.register = function( name, constructor, data ){
+    commands[ name ] = new constructor( data );
     if ( commands[ name ].on_register ) //run the on_register command if command has this definition
     commands[ name ].on_register( );
     autocompleter.register( name );
@@ -262,7 +260,7 @@ term.commands = new ( function Commands( autocompleter, history, output, input )
   this.execute = function( string ){
     if ( string.trim( ) == '' )
     return;
-    history.add( string.trim() );
+    history.add( string.trim( ) );
     output.add( string );
     input.reset( );
     var pipes = string.split( '|' );

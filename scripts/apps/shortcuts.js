@@ -20,7 +20,7 @@ term.keyboard.shortcut( 'Backspace', function( event ){
 } );
 
 term.keyboard.shortcut( 'Enter', function( ){
-  term.history.reset();
+  term.history.reset( );
   term.commands.execute( term.input.value( ) );
 } );
 

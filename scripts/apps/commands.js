@@ -45,7 +45,7 @@ term.commands.register ( 'backgrnd', function( ){
   this.options = [
     'list',
     'set'
-  ];
+ ];
   this.on_command = function( p ){
     console.log( p[ 1 ] );
     if ( p[ 1 ] == 'list' ){
@@ -68,39 +68,9 @@ term.commands.register ( 'backgrnd', function( ){
 term.commands.register ( 'google', function( ){
   this.on_command = function( p, input ){
     var bse = 'https://www.google.es/search?q=';
-    var qry = p.slice( 1, p.length ).toString( ).replace( /, /g, '+' );
+    var qry = p.slice( 1, p.length ).toString( ).replace( /,/g, '+' );
     var url = bse+qry;
     window.open( url );
-  };
-} );
-
-term.commands.register ( 'youtube', function( ){ //TODO
-  this.options = [
-    'search',
-    'pause',
-    'play',
-    'volume',
-    'seek'
-  ];
-  this.on_command = function( p, input ){
-    var commands = {
-      search : function( p ){
-        console.log( 'searching '+p );
-      },
-      pause : function( ){
-
-      },
-      play : function( ) {
-
-      },
-      volume : function( ) {
-
-      },
-      seek : function( ) {
-
-      }
-    };
-    commands[ p[ 1 ] ]( p );
   };
 } );
 
@@ -140,4 +110,3 @@ term.commands.register ( 'ls', function( ){
   this.on_register = function( args ){
   };
 } );
-
