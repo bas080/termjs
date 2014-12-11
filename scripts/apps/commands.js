@@ -1,25 +1,21 @@
 //Default commands that are registered
 term.commands.register ( 'man', function( ){
   this.on_command = function( p ){
-    var output = '';
     var commands = term.commands.get_commands_keys( );
-    for ( i in commands ){
-      output += commands[ i ]+'<br>';
-    }
-    return output;
+    return term.helpers.column( commands );
   };
 } );
 
 term.commands.register ( 'print', function( ){
   this.on_command = function( p ){
-    return p.slice( 1, p.length+1 ).toString( ).replace( ', ', ' ' );
+    return term.helpers.string( p.slice( 1, p.length+1 ).toString( ).replace( ', ', ' ' ) );
   };
 } );
 
 term.commands.register ( 'load', function( ){
   this.on_command = function( p ){
-    var url = p[1];
-    var put = p[2];
+    var url = p[ 1 ];
+    var put = p[ 2 ];
     return 'succesfully added';
   };
 } );
@@ -37,41 +33,27 @@ term.commands.register ( 'plot', function( ){
   };
 } );
 
-term.commands.register ( 'hello', function( ){
-  var personal = {};
-  var test;
-  d3.text( 'data/text.csv', function( data ){
-    test = data;
-  } );
-  this.on_command = function( p ){
-    return term.helpers.pretty( test );
-    return term.helpers.pretty( "Hey, I am a javascript linux terminal emulator. You can type man to see the manuals that can help you find your way around. What name would you like to give me?" );
-  };
-  this.on_register = function( ){
-    personal = {
-      username : localStorage.getItem( "username" ),
-      termname : localStorage.getItem( "termname" )
-    };
-  };
-} );
-
-term.commands.register ( 'column', function(){
-  this.on_commands = function( pipein ){
-    if ( typeof(pipein) == 'object' )
-    return term.helpers.column(pipein);
+term.commands.register ( 'column', function( ){
+  this.on_commands = function( params, input ){
+    if ( typeof( input ) == 'object' )
+    return term.helpers.column( input );
   };
 } );
 
 term.commands.register ( 'backgrnd', function( ){
   var list = {};
+  this.options = [
+    'list',
+    'set'
+  ];
   this.on_command = function( p ){
     console.log( p[ 1 ] );
     if ( p[ 1 ] == 'list' ){
-      console.log( list );
-      return term.helpers.column(list);
+      return term.helpers.column( list );
+    }else if ( p[ 1 ] == 'set' ){
+      term.elem.style.backgroundImage="url( styles/images/" + p[ 2 ];
+      localStorage.setItem( "backgrnd", p[ 2 ] );
     }
-    localStorage.setItem( "backgrnd", p[ 1 ] );
-    term.elem.style.backgroundImage="url( styles/images/" + p[ 1 ];
   };
   this.on_register = function( ){
     //Load available backgrnd.json
@@ -83,6 +65,51 @@ term.commands.register ( 'backgrnd', function( ){
   };
 } );
 
+term.commands.register ( 'google', function( ){
+  this.on_command = function( p, input ){
+    var bse = 'https://www.google.es/search?q=';
+    var qry = p.slice( 1, p.length ).toString( ).replace( /, /g, '+' );
+    var url = bse+qry;
+    window.open( url );
+  };
+} );
+
+term.commands.register ( 'youtube', function( ){ //TODO
+  this.options = [
+    'search',
+    'pause',
+    'play',
+    'volume',
+    'seek'
+  ];
+  this.on_command = function( p, input ){
+    var commands = {
+      search : function( p ){
+        console.log( 'searching '+p );
+      },
+      pause : function( ){
+
+      },
+      play : function( ) {
+
+      },
+      volume : function( ) {
+
+      },
+      seek : function( ) {
+
+      }
+    };
+    commands[ p[ 1 ] ]( p );
+  };
+} );
+
+term.commands.register ( 'history', function( ){
+  this.on_command = function( p, input ){
+    return term.helpers.column( term.output.get( ) );
+  };
+} );
+
 term.commands.register ( 'date', function( ){
   this.on_command = function( p ){
     return Date( ).toString( );
@@ -91,7 +118,7 @@ term.commands.register ( 'date', function( ){
 
 term.commands.register ( 'clear', function( ){
   this.on_command = function( p ){
-    term.output.innerHTML = '';
+    term.output.clear( );
   };
   this.on_register = function( p ){
   };
