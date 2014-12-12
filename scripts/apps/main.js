@@ -4,22 +4,26 @@
 //setup initial data and functions-
 //---------------------------------
 /*TODOS
-  Pipes that take in input and put out output to other pipes.
   It will have a data system and not a file system using ls, cd, mv, rm etc
   Loading data within the terminal with curl and set save position
   Saving the data tree by allowing copy pasting of it ( JSON format ) aka text field copy paste
+  Double Tab suggestions
+  Register aliases with parameters
 */
 
 term = {
-  elem : document.getElementById( "terminal" )
+  elem : document.getElementById( "terminal" ),
+  width : function(){
+    return 200;
+  },
+  height : function(){
+    return 200;
+  }
 };
 
 term.helpers = new ( function Helpers( ){
   this.table = function( array ){
     //TODO works only for arrays within arrays example is
-    //[
-      //[ head1, head2, head 3 ], >>   a    b    c
-      //[ entry1, entry2, entry3 ]    >>   19   28   32
     // ]
   };
   this.string = function( array ){
@@ -105,7 +109,7 @@ term.input = new ( function Input( ){
     cursor.innerHTML = before.innerHTML.slice(
       Math.min( length, length+offset ),
       Math.max( length, length+offset )
- );
+    );
   };
   this.add_character = function( character ){
     before.innerHTML += character;
@@ -175,6 +179,7 @@ term.history = new ( function History( input ){
 term.keyboard = new ( function Keyboard( input ){
   var Keyboard = this;
   var shortcuts = {};
+  var key_wait = 0.3;
   this.shortcut = function( shortcut, func ){ //get or set a keyboard shortcut
     if ( typeof( func ) === 'undefined' ){
       return shortcuts[ shortcut ];
@@ -204,7 +209,7 @@ term.keyboard = new ( function Keyboard( input ){
       'Ctrl 0',
       'Ctrl =',
       'Ctrl -'
- ];
+    ];
     var key = event.key;
     return shortcuts.indexOf( key );
   };
@@ -242,6 +247,9 @@ term.autocompleter = new ( function Autocomplete( input ){
     else
     tree.push( key );
   };
+  this.suggest = function(){
+    //TODO suggest on double tap
+  };
 } )( term.input );
 
 term.commands = new ( function Commands( autocompleter, history, output, input ){
@@ -266,10 +274,15 @@ term.commands = new ( function Commands( autocompleter, history, output, input )
     var pipes = string.split( '|' );
     for ( i in pipes ){
       var coms = pipes[ i ].trim( );
+      console.log(coms);
       var params = coms.split( ' ' );
       var command = commands[ params[ 0 ] ];
-      if ( command ){
-        var out = command.on_command( params );
+      if ( command ){ //if command exists and else execute as javascript
+        if ( pipes.length == i ){//if is the last command then output to term.output
+          var out = command.on_command( params, out );
+        }else{
+          var out = command.on_command( params, out ); //TODO commands should output not human readable but arrays, objects and string as they are.
+        }
       }else{
         try {
           var out = eval( string );
@@ -280,8 +293,8 @@ term.commands = new ( function Commands( autocompleter, history, output, input )
           }
         }
       }
-      if ( out )
-      output.add( out );
     }
+    if ( out )
+    output.add( out );
   };
 } )( term.autocompleter, term.history, term.output, term.input );

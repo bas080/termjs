@@ -43,3 +43,7 @@ term.keyboard.shortcut( 'Right', function( ){
 term.keyboard.shortcut( 'Tab', function( ){
   term.autocompleter.complete( term.input.value( ) );
 } );
+
+term.keyboard.shortcut( 'Tab Tab', function(){
+  term.autocompleter.suggest();
+}, true);

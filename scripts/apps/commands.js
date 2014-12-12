@@ -2,13 +2,7 @@
 term.commands.register ( 'man', function( ){
   this.on_command = function( p ){
     var commands = term.commands.get_commands_keys( );
-    return term.helpers.column( commands );
-  };
-} );
-
-term.commands.register ( 'print', function( ){
-  this.on_command = function( p ){
-    return term.helpers.string( p.slice( 1, p.length+1 ).toString( ).replace( ', ', ' ' ) );
+    return commands;
   };
 } );
 
@@ -20,22 +14,15 @@ term.commands.register ( 'load', function( ){
   };
 } );
 
-term.commands.register ( 'plot', function( ){
-  this.on_command = function( p ){
-    if ( p[ 1 ] == 'bar' ){ //plot a bar chart
-      var uri = p[ 2 ];
-      console.log( uri );
-      d3[ 'tsv' ]( uri, function( data ){
-        console.log( data );
-        return data
-      } );
-    }
+term.commands.register ( 'list', function( ){
+  this.on_command = function( params, input ){
+    return term.helpers.list( input );
   };
 } );
 
 term.commands.register ( 'column', function( ){
-  this.on_commands = function( params, input ){
-    if ( typeof( input ) == 'object' )
+  this.on_command = function( params, input ){
+    console.log(input);
     return term.helpers.column( input );
   };
 } );
@@ -49,7 +36,7 @@ term.commands.register ( 'backgrnd', function( ){
   this.on_command = function( p ){
     console.log( p[ 1 ] );
     if ( p[ 1 ] == 'list' ){
-      return term.helpers.column( list );
+      return list;
     }else if ( p[ 1 ] == 'set' ){
       term.elem.style.backgroundImage="url( styles/images/" + p[ 2 ];
       localStorage.setItem( "backgrnd", p[ 2 ] );
@@ -76,7 +63,7 @@ term.commands.register ( 'google', function( ){
 
 term.commands.register ( 'history', function( ){
   this.on_command = function( p, input ){
-    return term.helpers.column( term.history.list( ) );
+    return term.history.list( );
   };
 } );
 
