@@ -1,0 +1,14 @@
+{
+  "packages":[
+    "backgrnd",
+    "data",
+    "datasystem",
+    "default",
+    "google",
+    "grep",
+    "maze",
+    "plot",
+    "settings",
+    "youtube"
+  ]
+}

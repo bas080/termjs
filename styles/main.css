@@ -1,12 +1,36 @@
-body {
+body{
   font-family: monospace;
   background-color: black;
   background-attachment: fixed;
   color: white;
-  font-size: 18px;
-  padding: 24px;
+  padding: 12px;
+  margin: 12px;
   background-size: 100% 100%;
   background-position: 50% 0%;
+  overflow-y: hidden;
+  background-image: url('images/08_Space.jpg');
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 18px;
+}
+.pass, .fail, .error{
+  font-family: monospace;
+}
+
+.fail{
+  color: orange;
+}
+
+.error{
+  color: red;
+}
+
+.pass{
+  color: green;
+  display: none;
+}
+
+.hide{
+  display: none;
 }
 
 #chart {
@@ -17,12 +41,27 @@ body {
   left: 0px;
 }
 
-#output {
+#terminal_output {
   width: 100%;
-  white-space: pre;
 }
 
-#input_before, #input_cursor, #input_after {
+#commandline *{
+  transition: all 6s ease;
+}
+
+#pos_commandline, #pre_commandline{
+  white-space: pre-wrap;
+}
+
+#pre_cursor{
+  border-right: 1px solid white;
+  margin-right: -1px;
+}
+
+#pre_cursor.blink{
+}
+
+#pre_cursor, #pos_cursor {
   display: inline-block;
   white-space: pre;
 }
@@ -32,14 +71,9 @@ body {
   z-index: 0;
 }
 
-#input_cursor {
-  transition: all 3s ease;
-  background-color: #ddd;
-  color: black;
-  opacity: 0.4;
-  box-shadow: 64px 32px 4px #000;
-  border: 1px solid white;
-  margin: -1px;
+#terminal_input_cursor.blink{
+  background-color: black;
+  color: white;
 }
 
 #player {
@@ -49,7 +83,7 @@ body {
   margin: 32px;
   transition: all 0.5s ease;
   z-index: -1;
-  opacity: 0;
+  visibility: hidden;
   width: 0px;
   height: 0px;
 }
@@ -58,6 +92,7 @@ body {
   width: 640px;
   height: 390px;
   opacity: 1;
+  visibility: visible;
 }
 
 #player.fullscreen {
@@ -65,6 +100,7 @@ body {
   height: 100%;
   margin: 0px;
   opacity: 1;
+  visibility: visible;
 }
 
 #player.mini {
@@ -72,8 +108,9 @@ body {
   height: 20%;
   margin: 64px;
   opacity: 1;
+  visibility: visible;
 }
 
-#input_cursor.blink {
+#terminal_input_cursor {
   opacity: 0.6;
 }
