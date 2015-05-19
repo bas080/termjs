@@ -1,4 +1,4 @@
-//jUnix by bas080
+//Termjs by bas080
 //command line interface in javascript
 //inspired by linux and javascript and poop
 //You are to poor to donate and to rich to be poor
@@ -92,7 +92,6 @@ Term = function (container){
     var commandlinestr = Term.screen.commandline.text();
     var commandstr = commandlinestr.replace('&', '|').split('|');
     var parameters = commandstr[commandstr.length-1].replace(/^ */, '').split(' ');
-    console.log(parameters);
     var is_command = ( parameters.length == 1 );
     var options = [];
     if ( is_command ) //get options
@@ -227,7 +226,7 @@ Term = function (container){
       load : function( name ){
         var timedOut = setTimeout((function(name){
           return function(){
-            term.screen.pre_commandline.add(name+' timed out');
+            Term.screen.pre_commandline.add(name+' timed out');
           };
         })(name),3000);
         Term.screen.pre_commandline.add('loading '+name+'...');
@@ -312,7 +311,7 @@ Term = function (container){
       elements.pre_cursor.className = '';
       else
       elements.pre_cursor.className = 'blink';
-    }, 3000 );
+    }, 500 );
     this.cursor = {
       //is not really an element
       write : function( string ) {
@@ -411,6 +410,9 @@ Term = function (container){
   this.keyboard = new function (){
     var self = this;
     window.addEventListener("keydown", function (event){
+      //event.preventDefault();
+    });
+    window.addEventListener("keypress", function (event){
       event.preventDefault();
       self.keydown( event );
     });
@@ -422,6 +424,18 @@ Term = function (container){
       return Term.shortcut.perform( combo );
     };
     this.combo = function ( event ){
+      var keycodes = {
+        8 : "Backspace",
+        9 : "Tab",
+        13 : "Enter",
+        17 : "Ctrl",
+        18 : "Alt",
+        37 : "Left",
+        38 : "Up",
+        39 : "Right",
+        40 : "Down",
+        46 : "Delete"
+      };
       var combo = '';
       if ( event.ctrlKey )
       combo += 'Ctrl ';
@@ -429,13 +443,9 @@ Term = function (container){
       combo += 'Alt ';
       if ( ( event.ctrlKey || event.altKey ) && event.shiftKey )
       combo += 'Shift ';
-      combo += event.key;
+      combo += keycodes[ event.keyCode ] || String.fromCharCode( event.charCode );
+      //combo += event.key;
       return combo;
     };
   };
-};
-var term = new Term('terminal');
-
-function echo(str){
-  term.screen.pre_commandline.add(str.toString());
 };

@@ -66,6 +66,11 @@ body{
   white-space: pre;
 }
 
+#pos_cursor:first-letter {
+  background-color: white;
+  color: black;
+}
+
 #terminal {
   text-shadow: 64px 32px 4px black, 2px 1px 2px black;
   z-index: 0;
