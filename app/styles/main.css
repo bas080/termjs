@@ -1,0 +1,23 @@
+body{
+  background-color: black;
+  color: white;
+  font-size: 20px;
+}
+
+.lines, .prompt{
+  white-space: pre;
+}
+
+span.cursor{
+  color: black;
+  background-color: orange;
+}
+
+#term{
+  font-family: monospace;
+  width: 90%;
+}
+
+#term .line{
+  display: block;
+}
